@@ -1,3 +1,7 @@
+<p align="center">
+  <a id="cover" href="#cover"><img src="img/nil.svg" alt="A React null renderer" /></a>
+</p>
+
 [![Build Size](https://img.shields.io/bundlephobia/min/react-nil?label=bunlde%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=react-nil)
 [![Build Status](https://img.shields.io/travis/react-spring/react-nil/master?style=flat&colorA=000000&colorB=000000)](https://travis-ci.org/react-spring/react-nil)
 [![Version](https://img.shields.io/npm/v/react-nil?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-nil)
