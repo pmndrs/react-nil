@@ -17,6 +17,8 @@ This is a custom react renderer that only renders `null`, literally.
 
 Though if you think about it, managing side effects and async ops in Node is hard. In React all of this comes inbuilt and is trivial to manage: you pack away side-effects into useEffect, memoize tasks via useMemo, there is Suspense to orchestrate async ops where component A can await component B and access it by reference, context to communicate data, optional concurrency to maintain fast response. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
 
+Each "user" that connects to your express app could be represented by a component, mounted and managed by React. It cleans up after itself in the unmount Phase. Same for each task, operiation, request, etc. Logical components simply allow you to express stateful logic in a meaningful way as opposed to the imperative salad you would otherwise have.
+
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
 #### How does it work?
