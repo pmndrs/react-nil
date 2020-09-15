@@ -3,6 +3,8 @@ import Reconciler from 'react-reconciler/cjs/react-reconciler.production.min'
 const roots = new Map()
 const emptyObject = {}
 
+// Behold ... 💩
+
 const Renderer = Reconciler({
   supportsMutation: true,
   isPrimaryRenderer: true,
