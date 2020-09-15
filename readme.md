@@ -13,7 +13,7 @@ npm install react-nil
 
 This is a custom react renderer that only renders `null`, literally.
 
-#### Clearly nothing to see here, moving on ...
+#### Clearly nothing to see here, moving on ... :)
 
 Though if you think about it, managing side effects and async ops in Node is hard. In React all of this comes inbuilt and is trivial to manage: you pack away side-effects into useEffect, memoize tasks via useMemo, there is Suspense to orchestrate async ops where component A can await component B and access it by reference, context to communicate data, optional concurrency to maintain fast response. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
 
