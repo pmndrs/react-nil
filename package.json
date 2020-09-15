@@ -1,6 +1,6 @@
 {
   "name": "react-nil",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "react null renderer, a react custom renderer that renders nothing but logical components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
