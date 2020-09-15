@@ -1,4 +1,4 @@
-<p align="center">
+<p align="left">
   <a id="cover" href="#cover"><img src="img/nil.svg" alt="A React null renderer" /></a>
 </p>
 
