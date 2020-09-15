@@ -1,0 +1,58 @@
+{
+  "name": "react-nil",
+  "version": "0.0.0",
+  "description": "react null renderer, a react custom renderer that renders nothing but logical components",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build",
+    "test": "echo no tests yet"
+  },
+  "keywords": [
+    "react",
+    "null",
+    "nil",
+    "renderer",
+    "node"
+  ],
+  "author": "Paul Henschel",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.13.1",
+    "react-reconciler": "^0.25.1"
+  },
+  "devDependencies": {
+    "@babel/core": "7.11.0",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-transform-modules-commonjs": "7.10.4",
+    "@babel/plugin-transform-parameters": "7.10.5",
+    "@babel/plugin-transform-runtime": "7.11.0",
+    "@babel/plugin-transform-template-literals": "7.10.5",
+    "@babel/preset-env": "7.11.0",
+    "@babel/preset-react": "7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@rollup/plugin-babel": "^5.2.0",
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.26.10",
+    "rollup-plugin-size-snapshot": "^0.12.0",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
+  }
+}
