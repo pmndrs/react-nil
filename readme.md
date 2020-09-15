@@ -5,6 +5,8 @@
 
 This is a custom react renderer that renders `null`, literally. It has no native elements. That sounds crazy to you? Well, it still executes logical React components, which now opens the flood gates to many things that would otherwise be very hard to implement. How hard is managing async side effects in Node? In React you can mark and pack away effects into useEffect, you can memoize via useMemo, there is Suspense to orchestrate async requests, context to communicate data. And of course — the entire React eco system is now at your finger tips: Redux, Recoil, GraphQl, whatever you need.
 
+You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
+
 ```bash
 npm install react-nil
 ```
