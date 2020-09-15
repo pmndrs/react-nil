@@ -15,7 +15,7 @@ This is a custom react renderer that only renders `null`, literally. That sounds
 
 #### Clearly nothing to see here, moving on ... :) 
 
-Step back a moment and think about how hard managing side effects and async tasks in Node is. In React on this other hand this is inbuilt, you mark and pack away effects into useEffect, memoize via useMemo, there is Suspense to orchestrate async ops, context to communicate data. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
+Step back a moment and think about how hard managing side effects and async tasks in Node is. In React on the other hand all of this comes inbuilt and trivial to manage: you pack away side-effects into useEffect, memoize tasks via useMemo, there is Suspense to orchestrate async ops, context to communicate data, optional concurrency to maintain fast response. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
 
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
