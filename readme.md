@@ -11,11 +11,11 @@
 npm install react-nil
 ```
 
-This is a custom react renderer that only renders `null`, literally. That sounds crazy to you? Well, think of it, React can render visual components, they return a view, or logical components, without a view.
+This is a custom react renderer that only renders `null`, literally.
 
-#### Clearly nothing to see here, moving on ... :) 
+#### Clearly nothing to see here, moving on ...
 
-Step back a moment and think about how hard managing side effects and async tasks in Node is. In React on the other hand all of this comes inbuilt and trivial to manage: you pack away side-effects into useEffect, memoize tasks via useMemo, there is Suspense to orchestrate async ops, context to communicate data, optional concurrency to maintain fast response. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
+Though if you think about it, managing side effects and async ops in Node is hard. In React all of this comes inbuilt and is trivial to manage: you pack away side-effects into useEffect, memoize tasks via useMemo, there is Suspense to orchestrate async ops where component A can await component B and access it by reference, context to communicate data, optional concurrency to maintain fast response. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
 
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
