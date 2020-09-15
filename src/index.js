@@ -1,4 +1,4 @@
-import Reconciler from 'react-reconciler'
+import Reconciler from 'react-reconciler/cjs/react-reconciler.production.min'
 
 const roots = new Map()
 const emptyObject = {}

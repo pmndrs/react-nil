@@ -24,6 +24,7 @@
     "react-reconciler": "^0.25.1"
   },
   "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
     "@babel/core": "7.11.0",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
     "@babel/plugin-transform-modules-commonjs": "7.10.4",

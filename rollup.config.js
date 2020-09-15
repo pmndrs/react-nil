@@ -4,9 +4,14 @@ import resolve from '@rollup/plugin-node-resolve'
 import json from '@rollup/plugin-json'
 import { terser } from 'rollup-plugin-terser'
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot'
+import compiler from '@ampproject/rollup-plugin-closure-compiler'
+import commonjs from '@rollup/plugin-commonjs'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
-const external = (id) => !id.startsWith('.') && !id.startsWith(root)
+const external = (id) => {
+  if (id.startsWith('react-reconciler')) return false
+  return !id.startsWith('.') && !id.startsWith(root)
+}
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
 
 const getBabelOptions = ({ useESModules }, targets) => ({
@@ -30,9 +35,10 @@ export default [
     plugins: [
       json(),
       babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
-      sizeSnapshot(),
+      commonjs(),
       resolve({ extensions }),
-      terser(),
+      compiler({ compilation_level: 'SIMPLE', jscomp_off: 'checkVars' }),
+      sizeSnapshot(),
     ],
   },
   {
@@ -42,6 +48,7 @@ export default [
     plugins: [
       json(),
       babel(getBabelOptions({ useESModules: false })),
+      commonjs(),
       sizeSnapshot(),
       resolve({ extensions }),
       terser(),
