@@ -6,11 +6,12 @@
 [![Build Status](https://img.shields.io/travis/react-spring/react-nil/master?style=flat&colorA=000000&colorB=000000)](https://travis-ci.org/react-spring/react-nil)
 [![Version](https://img.shields.io/npm/v/react-nil?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-nil)
 
-This is a custom react renderer that only renders `null`, literally. That sounds crazy to you? Well, think of it, React can render visual components, they return a view, or logical components, without a view.
 
 ```bash
 npm install react-nil
 ```
+
+This is a custom react renderer that only renders `null`, literally. That sounds crazy to you? Well, think of it, React can render visual components, they return a view, or logical components, without a view.
 
 #### Clearly nothing to see here, moving on ... :) 
 
