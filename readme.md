@@ -6,15 +6,15 @@
 [![Build Status](https://img.shields.io/travis/react-spring/react-nil/master?style=flat&colorA=000000&colorB=000000)](https://travis-ci.org/react-spring/react-nil)
 [![Version](https://img.shields.io/npm/v/react-nil?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-nil)
 
-This is a custom react renderer that renders `null`, literally. It has no native elements. That sounds crazy to you? Well, it still runs *logical* (non-visual) React components, with all the benefits that brings.
+This is a custom react renderer that only renders `null`, literally. That sounds crazy to you? Well, think of it, React can render visual components, they return a view, or logical components, without a view.
 
 ```bash
 npm install react-nil
 ```
 
-#### But ... why?
+#### Clearly nothing to see here, moving on ... :) 
 
-Think of how hard managing async side effects in Node is. In React you can mark and pack away effects into useEffect, memoize via useMemo, there is Suspense to orchestrate async requests, context to communicate data. And of course — the entire React eco system is now at your finger tips: Redux, Recoil, GraphQl, whatever you need.
+Step back a moment and think about how hard managing side effects and async tasks in Node is. In React on this other hand this is inbuilt, you mark and pack away effects into useEffect, memoize via useMemo, there is Suspense to orchestrate async ops, context to communicate data. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, whatever you need.
 
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
