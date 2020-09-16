@@ -23,6 +23,7 @@ You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 #### How does it work?
 
 ```jsx
+import React, { useState, useEffect } from "react"
 import { render } from "react-nil"
 
 function Foo() {
