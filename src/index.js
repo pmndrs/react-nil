@@ -1,6 +1,6 @@
 import Reconciler from 'react-reconciler/cjs/react-reconciler.production.min'
 
-const roots = new Map()
+const root = Renderer.createContainer({}, 0, false, null)
 const emptyObject = {}
 
 // Behold ... 💩
@@ -49,14 +49,7 @@ const Renderer = Reconciler({
   cancelPassiveEffects(callback) {},
 })
 
-export function render(element, container = 'default') {
-  let root = roots.get(container)
-  if (!root) roots.set(container, (root = Renderer.createContainer(container, 0, false, null)))
+export function render(element) {
   Renderer.updateContainer(element, root, null, undefined)
   return Renderer.getPublicRootInstance(root)
-}
-
-export function unmountComponentAtNode(container = 'default') {
-  const root = roots.get(container)
-  if (root) Renderer.updateContainer(null, root, null, () => roots.delete(container))
 }
