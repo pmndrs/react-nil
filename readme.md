@@ -8,7 +8,7 @@
 
 #### Nothing to see here ...
 
-Quite so. This package allows you to bring Reacts high-level component abstraction to Node, or whereever you need it. Why not manage your REST endpoints like routes on the client, users as components with mount/unmount lifecycles, self-contained separation of concern and clean side-effects. Suspense for requests, etc.
+Quite so. This package allows you to bring Reacts high-level component abstraction to Node, or wherever you need it. Why not manage your REST endpoints like routes on the client, users as components with mount/unmount lifecycles, self-contained separation of concern and clean side-effects. Suspense for requests, etc.
 
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
