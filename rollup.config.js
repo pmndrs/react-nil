@@ -9,7 +9,7 @@ import commonjs from '@rollup/plugin-commonjs'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => {
-  if (['react', 'react-reconciler', 'scheduler', 'prop-types', 'object-assign'].some((name) => id.startsWith(name)))
+  if (['react-reconciler'].some((name) => id.startsWith(name)))
     return false
   return !id.startsWith('.') && !id.startsWith(root)
 }
