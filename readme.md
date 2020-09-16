@@ -10,7 +10,7 @@
 npm install react-nil
 ```
 
-This is a custom react renderer that only renders `null`, literally.
+This is a custom react renderer that renders nothing, or `null`, literally.
 
 #### Clearly nothing to see here, moving on ... :)
 
