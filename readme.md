@@ -7,7 +7,7 @@
 
 
 ```bash
-npm install react-nil
+npm install react react-nil
 ```
 
 This is a custom react renderer that renders nothing, or `null`, literally.
