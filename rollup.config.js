@@ -9,7 +9,8 @@ import commonjs from '@rollup/plugin-commonjs'
 
 const root = process.platform === 'win32' ? path.resolve('/') : '/'
 const external = (id) => {
-  if (id.startsWith('react-reconciler')) return false
+  if (['react', 'react-reconciler', 'scheduler', 'prop-types', 'object-assign'].some((name) => id.startsWith(name)))
+    return false
   return !id.startsWith('.') && !id.startsWith(root)
 }
 const extensions = ['.js', '.jsx', '.ts', '.tsx', '.json']
@@ -20,7 +21,7 @@ const getBabelOptions = ({ useESModules }, targets) => ({
   exclude: '**/node_modules/**',
   babelHelpers: 'runtime',
   presets: [
-    ['@babel/preset-env', { loose: true, modules: false, targets }],
+    ['@babel/preset-env', { loose: true, modules: false, targets: { node: 'current' } }],
     '@babel/preset-react',
     '@babel/preset-typescript',
   ],
@@ -34,7 +35,7 @@ export default [
     external,
     plugins: [
       json(),
-      babel(getBabelOptions({ useESModules: true }, '>1%, not dead, not ie 11, not op_mini all')),
+      babel(getBabelOptions({ useESModules: true }, 'node')),
       commonjs(),
       resolve({ extensions }),
       compiler({ compilation_level: 'SIMPLE', jscomp_off: 'checkVars' }),
