@@ -51,7 +51,7 @@ const Renderer = Reconciler({
 
 export function render(element, container = 'default') {
   let root = roots.get(container)
-  if (!root) roots.set(container, (root = Renderer.createContainer(container)))
+  if (!root) roots.set(container, (root = Renderer.createContainer(container, 0, false, null)))
   Renderer.updateContainer(element, root, null, undefined)
   return Renderer.getPublicRootInstance(root)
 }
