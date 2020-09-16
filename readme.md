@@ -6,17 +6,9 @@
 [![Version](https://img.shields.io/npm/v/react-nil?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/react-nil)
 
 
-```bash
-npm install react react-nil
-```
+#### Clearly nothing to see here ... :)
 
-This is a custom react renderer that renders nothing, or `null`, literally.
-
-#### Clearly nothing to see here, moving on ... :)
-
-There are legitimate usecases for null-components, also called logical components, for everything that has to do with, well, logic. For instance, how do you manage side effects and async ops in Node? Most likely you have noticed how hard it is.
-
-But in React all of this comes inbuilt: it's reactive after all, each component has a lifecycle, local state, packs away side-effects in `useEffect`, memoizes calculations in `useMemo`, orchestrates async ops with `suspense`, communicates data via `context`, maintains fast response with optional `concurrency`. And of course — the entire React eco system is available: Redux, Recoil, GraphQl, ...
+Quite so. This package allows you to bring Reacts high level component abstraction to Node, or whereever you need it. Why not manage your REST endpoints like routes on the client, users as components with unmount/unmount lifecycles, self-contained logic and clean side-effects. Suspense for requests, etc.
 
 You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
