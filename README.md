@@ -7,7 +7,6 @@
 <p align="left">
   <a id="cover" href="#cover">
     <picture>
-    <source srcset="https://github.com/pmndrs/react-nil/raw/master/.github/light.svg">
       <source media="(prefers-color-scheme: dark)" srcset=".github/dark.svg">
       <img alt="There are legitimate use cases for null components or logical components. A component has a lifecycle, local state, packs side-effects into useEffect, memoizes calculations in useMemo, orchestrates async ops with suspense, communicates via context, and maintains fast response with concurrency. And, of course — the entire React ecosystem is available." src=".github/light.svg">
     </picture>
