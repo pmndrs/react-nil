@@ -39,23 +39,6 @@ it('should go through lifecycle', async () => {
 })
 
 it('should handle suspense', async () => {
-  const lifecycle: string[] = []
-
-  function Test() {
-    lifecycle.push('render')
-    const ref = React.useRef()
-    React.useImperativeHandle(ref, () => void lifecycle.push('ref'))
-    React.useInsertionEffect(() => void lifecycle.push('useInsertionEffect'), [])
-    React.useLayoutEffect(() => void lifecycle.push('useLayoutEffect'), [])
-    React.useEffect(() => void lifecycle.push('useEffect'), [])
-    return null
-  }
-  await act(async () => render(<Test />))
-
-  expect(lifecycle).toStrictEqual(['render', 'useInsertionEffect', 'ref', 'useLayoutEffect', 'useEffect'])
-})
-
-it('should handle suspense', async () => {
   const Test = () => suspend(async () => null, [])
   await act(async () => render(<Test />))
 })
