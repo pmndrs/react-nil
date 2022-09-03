@@ -1,7 +1,7 @@
 {
   "name": "react-nil",
   "version": "0.0.3",
-  "description": "react null renderer, a react custom renderer that renders nothing but logical components",
+  "description": "react nil, a react custom renderer that renders nothing but logical components",
   "keywords": [
     "react",
     "null",
@@ -34,7 +34,6 @@
   "devDependencies": {
     "@types/node": "^18.7.14",
     "@types/react": "^18.0.17",
-    "prettier": "^2.7.1",
     "react": "^18.2.0",
     "rimraf": "^3.0.2",
     "suspend-react": "^0.0.8",
