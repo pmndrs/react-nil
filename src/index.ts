@@ -2,13 +2,23 @@ import * as React from 'react'
 import Reconciler from 'react-reconciler'
 import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
+export interface NilNode<P = {}> {
+  type: string
+  props: P
+  children: NilNode[]
+}
+
+export interface HostContainer {
+  head: NilNode | null
+}
+
 interface HostConfig {
-  type: never
-  props: never
-  container: {}
-  instance: null
-  textInstance: null
-  suspenseInstance: null
+  type: string
+  props: Record<string, unknown>
+  container: HostContainer
+  instance: NilNode
+  textInstance: NilNode
+  suspenseInstance: NilNode
   hydratableInstance: never
   publicInstance: null
   hostContext: null
@@ -41,29 +51,30 @@ const reconciler = Reconciler<
   scheduleTimeout: setTimeout,
   cancelTimeout: clearTimeout,
   noTimeout: -1,
-  createInstance: () => null,
+  createInstance: (type, { ref, key, children, ...props }) => ({ type, props, children: [] }),
   hideInstance() {},
   unhideInstance() {},
-  createTextInstance: () => null,
+  createTextInstance: (value) => ({ type: 'text', props: { value }, children: [] }),
   hideTextInstance() {},
   unhideTextInstance() {},
-  appendInitialChild() {},
-  appendChild() {},
-  appendChildToContainer() {},
-  insertBefore() {},
-  removeChild() {},
-  removeChildFromContainer() {},
-  getPublicInstance: (instance) => instance,
+  appendInitialChild: (parent, child) => parent.children.push(child),
+  appendChild: (parent, child) => parent.children.push(child),
+  appendChildToContainer: (container, child) => (container.head = child),
+  insertBefore: (parent, child, beforeChild) => parent.children.splice(parent.children.indexOf(beforeChild), 0, child),
+  removeChild: (parent, child) => parent.children.splice(parent.children.indexOf(child), 1),
+  removeChildFromContainer: (container) => (container.head = null),
+  getPublicInstance: () => null,
   getRootHostContext: () => null,
   getChildHostContext: () => null,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
   prepareUpdate: () => null,
-  commitUpdate() {},
+  commitUpdate: (instance, _, __, ___, { ref, key, children, ...props }) => Object.assign(instance.props, props),
+  commitTextUpdate: (instance, _, value) => Object.assign(instance.props, { value }),
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
-  clearContainer() {},
+  clearContainer: (container) => (container.head = null),
   // @ts-ignore
   getCurrentEventPriority: () => DefaultEventPriority,
   beforeActiveInstanceBlur: () => {},
@@ -80,13 +91,16 @@ reconciler.injectIntoDevTools({
   rendererPackageName: 'react-nil',
 })
 
-const root = reconciler.createContainer({}, ConcurrentRoot, null, false, null, '', console.error, null)
-
 /**
  * Renders a React element into a `null` root.
  */
-export function render(element: React.ReactNode): void {
+export function render(element: React.ReactNode): HostContainer {
+  const container: HostContainer = { head: null }
+
+  const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
   reconciler.updateContainer(element, root, null, undefined)
+
+  return container
 }
 
 declare module 'react' {
