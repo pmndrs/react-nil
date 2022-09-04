@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Reconciler from 'react-reconciler'
-import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants'
+import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
 interface HostConfig {
   type: never
