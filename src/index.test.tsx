@@ -17,25 +17,55 @@ vi.mock('scheduler', () => require('scheduler/unstable_mock'))
 const logError = global.console.error.bind(global.console.error)
 global.console.error = (...args: any[]) => !args[0].startsWith('Warning') && logError(...args)
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      element: Partial<{ ref: React.Ref<null>; key: React.Key; children: React.ReactNode }>
+    }
+  }
+}
+
 it('should render JSX', () => {
   render(<React.Fragment />)
+  render(<element />)
+  render(
+    <element>
+      <element />
+    </element>,
+  )
+  render(null)
 })
 
 it('should go through lifecycle', async () => {
   const lifecycle: string[] = []
+  let ref!: null
 
   function Test() {
     lifecycle.push('render')
-    const ref = React.useRef()
-    React.useImperativeHandle(ref, () => void lifecycle.push('ref'))
+    React.useImperativeHandle(React.useRef(), () => void lifecycle.push('refCallback'))
     React.useInsertionEffect(() => void lifecycle.push('useInsertionEffect'), [])
     React.useLayoutEffect(() => void lifecycle.push('useLayoutEffect'), [])
     React.useEffect(() => void lifecycle.push('useEffect'), [])
-    return null
+    return (
+      <element
+        ref={(self) => {
+          ref = self
+          lifecycle.push('ref')
+        }}
+      />
+    )
   }
   await act(async () => render(<Test />))
 
-  expect(lifecycle).toStrictEqual(['render', 'useInsertionEffect', 'ref', 'useLayoutEffect', 'useEffect'])
+  expect(ref).toBe(null)
+  expect(lifecycle).toStrictEqual([
+    'render',
+    'useInsertionEffect',
+    'ref',
+    'refCallback',
+    'useLayoutEffect',
+    'useEffect',
+  ])
 })
 
 it('should handle suspense', async () => {
