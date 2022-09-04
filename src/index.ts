@@ -2,15 +2,27 @@ import * as React from 'react'
 import Reconciler from 'react-reconciler'
 import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
+export interface NilNode<P = {}> {
+  type: string
+  props: P
+  children: NilNode[]
+}
+
+export type NilElement<P = {}> = {
+  key?: React.Key
+  ref?: React.Ref<NilNode<P>>
+  children?: React.ReactNode
+} & P
+
 interface HostConfig {
-  type: never
-  props: never
+  type: string
+  props: Record<string, unknown>
   container: {}
-  instance: null
-  textInstance: null
-  suspenseInstance: null
+  instance: NilNode
+  textInstance: NilNode
+  suspenseInstance: NilNode
   hydratableInstance: never
-  publicInstance: null
+  publicInstance: NilNode
   hostContext: null
   updatePayload: null
   childSet: never
@@ -41,17 +53,17 @@ const reconciler = Reconciler<
   scheduleTimeout: setTimeout,
   cancelTimeout: clearTimeout,
   noTimeout: -1,
-  createInstance: () => null,
+  createInstance: (type, { ref, key, children, ...props }) => ({ type, props, children: [] }),
   hideInstance() {},
   unhideInstance() {},
-  createTextInstance: () => null,
+  createTextInstance: (value) => ({ type: 'text', props: { value }, children: [] }),
   hideTextInstance() {},
   unhideTextInstance() {},
-  appendInitialChild() {},
-  appendChild() {},
+  appendInitialChild: (parent, child) => parent.children.push(child),
+  appendChild: (parent, child) => parent.children.push(child),
   appendChildToContainer() {},
-  insertBefore() {},
-  removeChild() {},
+  insertBefore: (parent, child, beforeChild) => parent.children.splice(parent.children.indexOf(beforeChild), 0, child),
+  removeChild: (parent, child) => parent.children.splice(parent.children.indexOf(child), 1),
   removeChildFromContainer() {},
   getPublicInstance: (instance) => instance,
   getRootHostContext: () => null,
@@ -59,7 +71,8 @@ const reconciler = Reconciler<
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
   prepareUpdate: () => null,
-  commitUpdate() {},
+  commitUpdate: (instance, _, __, ___, { ref, key, children, ...props }) => Object.assign(instance.props, props),
+  commitTextUpdate: (instance, _, value) => Object.assign(instance.props, { value }),
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
