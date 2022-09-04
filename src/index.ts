@@ -14,15 +14,19 @@ export type NilElement<P = {}> = {
   children?: React.ReactNode
 } & P
 
+export interface HostContainer {
+  head: NilNode | null
+}
+
 interface HostConfig {
   type: string
   props: Record<string, unknown>
-  container: {}
+  container: HostContainer
   instance: NilNode
   textInstance: NilNode
   suspenseInstance: NilNode
   hydratableInstance: never
-  publicInstance: NilNode
+  publicInstance: null
   hostContext: null
   updatePayload: null
   childSet: never
@@ -61,11 +65,11 @@ const reconciler = Reconciler<
   unhideTextInstance() {},
   appendInitialChild: (parent, child) => parent.children.push(child),
   appendChild: (parent, child) => parent.children.push(child),
-  appendChildToContainer() {},
+  appendChildToContainer: (container, child) => (container.head = child),
   insertBefore: (parent, child, beforeChild) => parent.children.splice(parent.children.indexOf(beforeChild), 0, child),
   removeChild: (parent, child) => parent.children.splice(parent.children.indexOf(child), 1),
-  removeChildFromContainer() {},
-  getPublicInstance: (instance) => instance,
+  removeChildFromContainer: (container) => (container.head = null),
+  getPublicInstance: () => null,
   getRootHostContext: () => null,
   getChildHostContext: () => null,
   shouldSetTextContent: () => false,
@@ -76,7 +80,7 @@ const reconciler = Reconciler<
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
-  clearContainer() {},
+  clearContainer: (container) => (container.head = null),
   // @ts-ignore
   getCurrentEventPriority: () => DefaultEventPriority,
   beforeActiveInstanceBlur: () => {},
@@ -93,13 +97,16 @@ reconciler.injectIntoDevTools({
   rendererPackageName: 'react-nil',
 })
 
-const root = reconciler.createContainer({}, ConcurrentRoot, null, false, null, '', console.error, null)
-
 /**
  * Renders a React element into a `null` root.
  */
-export function render(element: React.ReactNode): void {
+export function render(element: React.ReactNode): HostContainer {
+  const container: HostContainer = { head: null }
+
+  const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
   reconciler.updateContainer(element, root, null, undefined)
+
+  return container
 }
 
 declare module 'react' {

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { type NilElement, render, act } from './index'
+import { type NilElement, render, act, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
@@ -71,17 +71,17 @@ it('should handle text', async () => {
   await act(async () => render(<Test />))
 })
 
-it('should pass tree as JSON to refs', async () => {
-  const ref = React.createRef<any>()
+it('should pass tree as JSON from render', async () => {
+  let container!: HostContainer
   await act(async () => {
-    render(
-      <parent foo ref={ref}>
+    container = render(
+      <parent foo>
         <child bar>text</child>
       </parent>,
     )
   })
 
-  expect(ref.current).toStrictEqual({
+  expect(container.head).toStrictEqual({
     type: 'parent',
     props: { foo: true },
     children: [
