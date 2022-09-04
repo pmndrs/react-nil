@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { type NilElement, render, act, type HostContainer } from './index'
+import { render, act, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
@@ -17,12 +17,18 @@ vi.mock('scheduler', () => require('scheduler/unstable_mock'))
 const logError = global.console.error.bind(global.console.error)
 global.console.error = (...args: any[]) => !args[0].startsWith('Warning') && logError(...args)
 
+interface ReactProps {
+  key?: React.Key
+  ref?: React.Ref<null>
+  children?: React.ReactNode
+}
+
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      element: NilElement
-      parent: NilElement<{ foo: boolean }>
-      child: NilElement<{ bar: boolean }>
+      element: ReactProps
+      parent: ReactProps & { foo: boolean }
+      child: ReactProps & { bar: boolean }
     }
   }
 }

@@ -8,12 +8,6 @@ export interface NilNode<P = {}> {
   children: NilNode[]
 }
 
-export type NilElement<P = {}> = {
-  key?: React.Key
-  ref?: React.Ref<NilNode<P>>
-  children?: React.ReactNode
-} & P
-
 export interface HostContainer {
   head: NilNode | null
 }
