@@ -1,15 +1,7 @@
 {
   "name": "react-nil",
-  "version": "0.0.3",
-  "description": "react null renderer, a react custom renderer that renders nothing but logical components",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.js",
-  "sideEffects": false,
-  "scripts": {
-    "build": "rollup -c",
-    "prepublishOnly": "npm run build",
-    "test": "echo no tests yet"
-  },
+  "version": "1.0.0",
+  "description": "react nil, a react custom renderer that renders nothing but logical components",
   "keywords": [
     "react",
     "null",
@@ -17,47 +9,47 @@
     "renderer",
     "node"
   ],
-  "author": "Paul Henschel",
+  "author": "Paul Henschel (https://github.com/drcmda)",
+  "maintainers": [
+    "Gianmarco Simone (https://github.com/gsimone)",
+    "Stephen Corwin (https://github.com/stephencorwin)",
+    "Cody Bennett (https://github.com/codyjasonbennett)"
+  ],
+  "homepage": "https://github.com/pmndrs/react-nil",
+  "repository": "https://github.com/pmndrs/react-nil",
   "license": "MIT",
+  "files": [
+    "dist/*",
+    "src/*"
+  ],
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.js",
+    "import": "./dist/index.mjs"
+  },
+  "sideEffects": false,
   "devDependencies": {
-    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
-    "@babel/core": "7.11.0",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-transform-modules-commonjs": "7.10.4",
-    "@babel/plugin-transform-parameters": "7.10.5",
-    "@babel/plugin-transform-runtime": "7.11.0",
-    "@babel/plugin-transform-template-literals": "7.10.5",
-    "@babel/preset-env": "7.11.0",
-    "@babel/preset-react": "7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@rollup/plugin-babel": "^5.2.0",
-    "@rollup/plugin-commonjs": "^15.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "husky": "^4.2.5",
-    "lint-staged": "^10.2.11",
-    "prettier": "^2.0.5",
-    "react": "^16.13.1",
+    "@types/node": "^18.7.14",
+    "@types/react": "^18.0.17",
+    "react": "^18.2.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.26.10",
-    "rollup-plugin-size-snapshot": "^0.12.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "suspend-react": "^0.0.8",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.9",
+    "vitest": "^0.22.1"
   },
   "dependencies": {
-    "react-reconciler": "^0.25.1",
-    "scheduler": "^0.20.2"
+    "@types/react-reconciler": "^0.26.7",
+    "react-reconciler": "^0.27.0"
   },
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=18.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ]
+  "scripts": {
+    "build": "rimraf dist && vite build && tsc",
+    "test": "vitest run"
   }
 }
