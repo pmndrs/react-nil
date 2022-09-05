@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { render, act, type HostContainer } from './index'
+import { act, render, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
@@ -17,32 +17,19 @@ vi.mock('scheduler', () => require('scheduler/unstable_mock'))
 const logError = global.console.error.bind(global.console.error)
 global.console.error = (...args: any[]) => !args[0].startsWith('Warning') && logError(...args)
 
-interface ReactProps {
+interface ReactProps<T> {
   key?: React.Key
-  ref?: React.Ref<null>
+  ref?: React.Ref<T>
   children?: React.ReactNode
 }
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      element: ReactProps
-      parent: ReactProps & { foo: boolean }
-      child: ReactProps & { bar: boolean }
+      element: ReactProps<null> & Record<string, unknown>
     }
   }
 }
-
-it('should render JSX', () => {
-  render(<React.Fragment />)
-  render(<element />)
-  render(
-    <element>
-      <element />
-    </element>,
-  )
-  render(null)
-})
 
 it('should go through lifecycle', async () => {
   const lifecycle: string[] = []
@@ -60,40 +47,23 @@ it('should go through lifecycle', async () => {
   expect(lifecycle).toStrictEqual(['render', 'useInsertionEffect', 'ref', 'useLayoutEffect', 'useEffect'])
 })
 
-it('should handle suspense', async () => {
-  const Test = () => suspend(async () => null, [])
-  await act(async () => render(<Test />))
-})
-
-it('should handle text', async () => {
-  // Mount
-  await act(async () => render(<>one</>))
-  // Update
-  await act(async () => render(<>two</>))
-  // Unmount
-  await act(async () => render(<></>))
-  // Suspense
-  const Test = () => suspend(async () => null, [])
-  await act(async () => render(<Test />))
-})
-
 it('should pass tree as JSON from render', async () => {
   let container!: HostContainer
   await act(async () => {
     container = render(
-      <parent foo>
-        <child bar>text</child>
-      </parent>,
+      <element parent>
+        <element child>text</element>
+      </element>,
     )
   })
 
   expect(container.head).toStrictEqual({
-    type: 'parent',
-    props: { foo: true },
+    type: 'element',
+    props: { parent: true },
     children: [
       {
-        type: 'child',
-        props: { bar: true },
+        type: 'element',
+        props: { child: true },
         children: [
           {
             type: 'text',
@@ -104,4 +74,82 @@ it('should pass tree as JSON from render', async () => {
       },
     ],
   })
+})
+
+it('should render no-op elements', async () => {
+  let container!: HostContainer
+
+  // Literal `null`
+  await act(async () => (container = render(null)))
+  expect(container.head).toBe(null)
+
+  // Literal `undefined`
+  await act(async () => (container = render(undefined)))
+  expect(container.head).toBe(null)
+
+  // Literal booleans
+  await act(async () => (container = render(true)))
+  expect(container.head).toBe(null)
+
+  // Empty strings
+  await act(async () => (container = render('')))
+  expect(container.head).toBe(null)
+
+  // Reserved symbols
+  await act(async () => (container = render(<React.Fragment />)))
+  expect(container.head).toBe(null)
+
+  // Empty components
+  await act(async () => (container = render(React.createElement(() => null))))
+  expect(container.head).toBe(null)
+})
+
+it('should render native elements', async () => {
+  let container!: HostContainer
+
+  // Mount
+  await act(async () => (container = render(<element key={1} foo />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
+
+  // Remount
+  await act(async () => (container = render(<element bar />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { bar: true }, children: [] })
+
+  // Mutate
+  await act(async () => (container = render(<element foo />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
+
+  // Unmount
+  await act(async () => (container = render(<></>)))
+  expect(container.head).toBe(null)
+
+  // Suspense
+  const Test = () => (suspend(async () => null, []), (<element bar />))
+  await act(async () => (container = render(<Test />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { bar: true }, children: [] })
+})
+
+it('should render text', async () => {
+  let container!: HostContainer
+
+  // Mount
+  await act(async () => (container = render(<>one</>)))
+  expect(container.head).toStrictEqual({ type: 'text', props: { value: 'one' }, children: [] })
+
+  // Remount
+  await act(async () => (container = render(<>one</>)))
+  expect(container.head).toStrictEqual({ type: 'text', props: { value: 'one' }, children: [] })
+
+  // Mutate
+  await act(async () => (container = render(<>two</>)))
+  expect(container.head).toStrictEqual({ type: 'text', props: { value: 'two' }, children: [] })
+
+  // Unmount
+  await act(async () => (container = render(<></>)))
+  expect(container.head).toBe(null)
+
+  // Suspense
+  const Test = () => (suspend(async () => null, []), (<>three</>))
+  await act(async () => (container = render(<Test />)))
+  expect(container.head).toStrictEqual({ type: 'text', props: { value: 'three' }, children: [] })
 })

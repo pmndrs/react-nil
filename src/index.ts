@@ -2,7 +2,7 @@ import * as React from 'react'
 import Reconciler from 'react-reconciler'
 import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
-export interface NilNode<P = {}> {
+export interface NilNode<P = Record<string, unknown>> {
   type: string
   props: P
   children: NilNode[]
@@ -22,7 +22,7 @@ interface HostConfig {
   hydratableInstance: never
   publicInstance: null
   hostContext: null
-  updatePayload: null
+  updatePayload: {}
   childSet: never
   timeoutHandle: number
   noTimeout: -1
@@ -68,9 +68,9 @@ const reconciler = Reconciler<
   getChildHostContext: () => null,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
-  prepareUpdate: () => null,
-  commitUpdate: (instance, _, __, ___, { ref, key, children, ...props }) => Object.assign(instance.props, props),
-  commitTextUpdate: (instance, _, value) => Object.assign(instance.props, { value }),
+  prepareUpdate: () => ({}),
+  commitUpdate: (instance, _, __, ___, { ref, key, children, ...props }) => (instance.props = props),
+  commitTextUpdate: (instance, _, value) => (instance.props.value = value),
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
@@ -91,15 +91,14 @@ reconciler.injectIntoDevTools({
   rendererPackageName: 'react-nil',
 })
 
+const container: HostContainer = { head: null }
+const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
+
 /**
  * Renders a React element into a `null` root.
  */
 export function render(element: React.ReactNode): HostContainer {
-  const container: HostContainer = { head: null }
-
-  const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
   reconciler.updateContainer(element, root, null, undefined)
-
   return container
 }
 
