@@ -15,7 +15,7 @@ export interface HostContainer {
 interface HostConfig {
   type: string
   props: Record<string, unknown>
-  container: HostContainer
+  container: React.MutableRefObject<HostContainer>
   instance: NilNode
   textInstance: NilNode
   suspenseInstance: NilNode
@@ -59,10 +59,10 @@ const reconciler = Reconciler<
   unhideTextInstance() {},
   appendInitialChild: (parent, child) => parent.children.push(child),
   appendChild: (parent, child) => parent.children.push(child),
-  appendChildToContainer: (container, child) => (container.head = child),
+  appendChildToContainer: (container, child) => (container.current.head = child),
   insertBefore: (parent, child, beforeChild) => parent.children.splice(parent.children.indexOf(beforeChild), 0, child),
   removeChild: (parent, child) => parent.children.splice(parent.children.indexOf(child), 1),
-  removeChildFromContainer: (container) => (container.head = null),
+  removeChildFromContainer: (container) => (container.current.head = null),
   getPublicInstance: () => null,
   getRootHostContext: () => null,
   getChildHostContext: () => null,
@@ -74,7 +74,7 @@ const reconciler = Reconciler<
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
-  clearContainer: (container) => (container.head = null),
+  clearContainer: (container) => (container.current.head = null),
   // @ts-ignore
   getCurrentEventPriority: () => DefaultEventPriority,
   beforeActiveInstanceBlur: () => {},
@@ -82,7 +82,6 @@ const reconciler = Reconciler<
   detachDeletedInstance: () => {},
 })
 
-// Inject renderer meta into devtools
 const isProd = typeof process === 'undefined' || process.env?.['NODE_ENV'] === 'production'
 reconciler.injectIntoDevTools({
   findFiberByHostInstance: () => null,
@@ -91,13 +90,16 @@ reconciler.injectIntoDevTools({
   rendererPackageName: 'react-nil',
 })
 
+const rootContainer: React.MutableRefObject<HostContainer> = { current: null! }
+const root = reconciler.createContainer(rootContainer, ConcurrentRoot, null, false, null, '', console.error, null)
+
 /**
  * Renders a React element into a `null` root.
  */
 export function render(element: React.ReactNode): HostContainer {
-  const container: HostContainer = { head: null }
+  const container = { head: null }
 
-  const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
+  rootContainer.current = container
   reconciler.updateContainer(element, root, null, undefined)
 
   return container

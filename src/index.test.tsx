@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { render, act, type HostContainer } from './index'
+import { act, render, createPortal, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
@@ -104,4 +104,16 @@ it('should pass tree as JSON from render', async () => {
       },
     ],
   })
+})
+
+it('should support multiple concurrent roots', async () => {
+  let container1!: HostContainer
+  let container2!: HostContainer
+
+  await act(async () => (container1 = render(<parent foo />)))
+  await act(async () => (container2 = render(<child bar />)))
+
+  expect(container1.head).toStrictEqual({ type: 'parent', props: { foo: true }, children: [] })
+  expect(container2.head).toStrictEqual({ type: 'child', props: { bar: true }, children: [] })
+  expect(container1).not.toBe(container2)
 })
