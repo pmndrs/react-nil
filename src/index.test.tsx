@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { act, render, createPortal, type HostContainer } from './index'
+import { act, render, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
