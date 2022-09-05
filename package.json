@@ -9,11 +9,11 @@
     "renderer",
     "node"
   ],
-  "author": "Paul Henschel (https://github.com/drcmda)",
+  "author": "Cody Bennett (https://github.com/codyjasonbennett)",
   "maintainers": [
+    "Paul Henschel (https://github.com/drcmda)",
     "Gianmarco Simone (https://github.com/gsimone)",
-    "Stephen Corwin (https://github.com/stephencorwin)",
-    "Cody Bennett (https://github.com/codyjasonbennett)"
+    "Stephen Corwin (https://github.com/stephencorwin)"
   ],
   "homepage": "https://github.com/pmndrs/react-nil",
   "repository": "https://github.com/pmndrs/react-nil",
