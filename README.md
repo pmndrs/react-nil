@@ -21,6 +21,8 @@ You can try a small demo here: https://codesandbox.io/s/react-nil-mvpry
 
 #### How does it work?
 
+The following renders a logical component without a view, it renders nothing, but it has a real lifecycle and is managed by React regardless.
+
 ```jsx
 import * as React from 'react'
 import { render } from 'react-nil'
@@ -28,12 +30,30 @@ import { render } from 'react-nil'
 function Foo() {
   const [active, set] = React.useState(false)
   React.useEffect(() => void setInterval(() => set((a) => !a), 1000), [])
-  console.log(active)
 
-  // This is a logical component without a view, it renders nothing,
-  // but it has a real lifecycle and is managed by React regardless.
-  return null
+  // false, true, ...
+  console.log(active)
 }
 
 render(<Foo />)
+```
+
+We can take this further by rendering made-up elements that get returned as a reactive JSON tree from `render`.
+
+You can take a snapshot for testing via `act` which will wait for effects and suspense to finish.
+
+```jsx
+import * as React from 'react'
+import { act, render } from 'react-nil'
+
+function Test(props) {
+  const [value, setValue] = React.useState(-1)
+  React.useEffect(() => setValue(Date.now()), [])
+  return <timestamp value={value} />
+}
+
+const container = await act(async () => render(<Test />))
+
+// { type: 'timestamp', props: { value: number }, children: [] }
+console.log(container.head)
 ```
