@@ -1,6 +1,6 @@
 {
   "name": "react-nil",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "react nil, a react custom renderer that renders nothing but logical components",
   "keywords": [
     "react",
