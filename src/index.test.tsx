@@ -13,10 +13,6 @@ global.IS_REACT_ACT_ENVIRONMENT = true
 // Mock scheduler to test React features
 vi.mock('scheduler', () => require('scheduler/unstable_mock'))
 
-// Silence react-dom & react-dom/client mismatch
-const logError = global.console.error.bind(global.console.error)
-global.console.error = (...args: any[]) => !args[0].startsWith('Warning') && logError(...args)
-
 interface ReactProps<T> {
   key?: React.Key
   ref?: React.Ref<T>
@@ -45,35 +41,6 @@ it('should go through lifecycle', async () => {
   await act(async () => render(<Test />))
 
   expect(lifecycle).toStrictEqual(['render', 'useInsertionEffect', 'ref', 'useLayoutEffect', 'useEffect'])
-})
-
-it('should pass tree as JSON from render', async () => {
-  let container!: HostContainer
-  await act(async () => {
-    container = render(
-      <element parent>
-        <element child>text</element>
-      </element>,
-    )
-  })
-
-  expect(container.head).toStrictEqual({
-    type: 'element',
-    props: { parent: true },
-    children: [
-      {
-        type: 'element',
-        props: { child: true },
-        children: [
-          {
-            type: 'text',
-            props: { value: 'text' },
-            children: [],
-          },
-        ],
-      },
-    ],
-  })
 })
 
 it('should render no-op elements', async () => {
@@ -116,6 +83,24 @@ it('should render native elements', async () => {
   expect(container.head).toStrictEqual({ type: 'element', props: { bar: true }, children: [] })
 
   // Mutate
+  await act(async () => (container = render(<element foo />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
+
+  // Child mount
+  await act(async () => {
+    container = render(
+      <element foo>
+        <element />
+      </element>,
+    )
+  })
+  expect(container.head).toStrictEqual({
+    type: 'element',
+    props: { foo: true },
+    children: [{ type: 'element', props: {}, children: [] }],
+  })
+
+  // Child unmount
   await act(async () => (container = render(<element foo />)))
   expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
 
