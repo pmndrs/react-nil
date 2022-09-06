@@ -86,6 +86,24 @@ it('should render native elements', async () => {
   await act(async () => (container = render(<element foo />)))
   expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
 
+  // Child mount
+  await act(async () => {
+    container = render(
+      <element foo>
+        <element />
+      </element>,
+    )
+  })
+  expect(container.head).toStrictEqual({
+    type: 'element',
+    props: { foo: true },
+    children: [{ type: 'element', props: {}, children: [] }],
+  })
+
+  // Child unmount
+  await act(async () => (container = render(<element foo />)))
+  expect(container.head).toStrictEqual({ type: 'element', props: { foo: true }, children: [] })
+
   // Unmount
   await act(async () => (container = render(<></>)))
   expect(container.head).toBe(null)
