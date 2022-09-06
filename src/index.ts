@@ -28,6 +28,18 @@ interface HostConfig {
   noTimeout: -1
 }
 
+// react-reconciler exposes some sensitive props. We don't want them exposed in public instances
+const REACT_INTERNAL_PROPS = ['ref', 'key', 'children']
+function getInstanceProps(props: Reconciler.Fiber['pendingProps']): HostConfig['props'] {
+  const instanceProps: HostConfig['props'] = {}
+
+  for (const key in props) {
+    if (!REACT_INTERNAL_PROPS.includes(key)) instanceProps[key] = props[key]
+  }
+
+  return instanceProps
+}
+
 const reconciler = Reconciler<
   HostConfig['type'],
   HostConfig['props'],
@@ -51,7 +63,7 @@ const reconciler = Reconciler<
   scheduleTimeout: setTimeout,
   cancelTimeout: clearTimeout,
   noTimeout: -1,
-  createInstance: (type, { ref, key, children, ...props }) => ({ type, props, children: [] }),
+  createInstance: (type, props) => ({ type, props: getInstanceProps(props), children: [] }),
   hideInstance() {},
   unhideInstance() {},
   createTextInstance: (value) => ({ type: 'text', props: { value }, children: [] }),
@@ -69,7 +81,7 @@ const reconciler = Reconciler<
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
   prepareUpdate: () => ({}),
-  commitUpdate: (instance, _, __, ___, { ref, key, children, ...props }) => (instance.props = props),
+  commitUpdate: (instance, _, __, ___, props) => (instance.props = getInstanceProps(props)),
   commitTextUpdate: (instance, _, value) => (instance.props.value = value),
   prepareForCommit: () => null,
   resetAfterCommit() {},
