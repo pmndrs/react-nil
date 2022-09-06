@@ -38,9 +38,10 @@ it('should go through lifecycle', async () => {
     React.useEffect(() => void lifecycle.push('useEffect'), [])
     return null
   }
-  await act(async () => render(<Test />))
+  const container: HostContainer = await act(async () => render(<Test />))
 
   expect(lifecycle).toStrictEqual(['render', 'useInsertionEffect', 'ref', 'useLayoutEffect', 'useEffect'])
+  expect(container.head).toBe(null)
 })
 
 it('should render no-op elements', async () => {

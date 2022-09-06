@@ -115,7 +115,7 @@ export function render(element: React.ReactNode): HostContainer {
 }
 
 declare module 'react' {
-  const unstable_act: (cb: () => Promise<any>) => Promise<any>
+  const unstable_act: <T = any>(cb: () => Promise<T>) => Promise<T>
 }
 
 /**
