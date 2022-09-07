@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { act, render, type HostContainer } from './index'
+import { act, render, createPortal, type HostContainer } from './index'
 
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
@@ -44,35 +44,7 @@ it('should go through lifecycle', async () => {
   expect(container.head).toBe(null)
 })
 
-it('should render no-op elements', async () => {
-  let container!: HostContainer
-
-  // Literal `null`
-  await act(async () => (container = render(null)))
-  expect(container.head).toBe(null)
-
-  // Literal `undefined`
-  await act(async () => (container = render(undefined)))
-  expect(container.head).toBe(null)
-
-  // Literal booleans
-  await act(async () => (container = render(true)))
-  expect(container.head).toBe(null)
-
-  // Empty strings
-  await act(async () => (container = render('')))
-  expect(container.head).toBe(null)
-
-  // Reserved symbols
-  await act(async () => (container = render(<React.Fragment />)))
-  expect(container.head).toBe(null)
-
-  // Empty components
-  await act(async () => (container = render(React.createElement(() => null))))
-  expect(container.head).toBe(null)
-})
-
-it('should render native elements', async () => {
+it('should render JSX', async () => {
   let container!: HostContainer
 
   // Mount
@@ -113,6 +85,12 @@ it('should render native elements', async () => {
   const Test = () => (suspend(async () => null, []), (<element bar />))
   await act(async () => (container = render(<Test />)))
   expect(container.head).toStrictEqual({ type: 'element', props: { bar: true }, children: [] })
+
+  // Portals
+  const portalContainer: HostContainer = { head: null }
+  await act(async () => (container = render(createPortal(<element />, portalContainer))))
+  expect(container.head).toBe(null)
+  expect(portalContainer.head).toStrictEqual({ type: 'element', props: {}, children: [] })
 })
 
 it('should render text', async () => {
@@ -138,4 +116,10 @@ it('should render text', async () => {
   const Test = () => (suspend(async () => null, []), (<>three</>))
   await act(async () => (container = render(<Test />)))
   expect(container.head).toStrictEqual({ type: 'text', props: { value: 'three' }, children: [] })
+
+  // Portals
+  const portalContainer: HostContainer = { head: null }
+  await act(async () => (container = render(createPortal('four', portalContainer))))
+  expect(container.head).toBe(null)
+  expect(portalContainer.head).toStrictEqual({ type: 'text', props: { value: 'four' }, children: [] })
 })

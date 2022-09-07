@@ -114,6 +114,13 @@ export function render(element: React.ReactNode): HostContainer {
   return container
 }
 
+/**
+ * Renders a React element into a foreign {@link HostContainer}.
+ */
+export function createPortal(element: React.ReactNode, container: HostContainer): JSX.Element {
+  return <>{reconciler.createPortal(element, container, null, null)}</>
+}
+
 declare module 'react' {
   const unstable_act: <T = any>(cb: () => Promise<T>) => Promise<T>
 }
