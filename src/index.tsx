@@ -3,6 +3,10 @@ import * as React from 'react'
 import Reconciler from 'react-reconciler'
 import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
+console.warn = console.error = (message: string) => {
+  throw new Error(message)
+}
+
 export interface NilNode<P = Record<string, unknown>> {
   type: string
   props: P
