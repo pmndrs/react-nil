@@ -1,3 +1,4 @@
+/// <reference types="react/experimental" />
 import * as React from 'react'
 import Reconciler from 'react-reconciler'
 import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
@@ -56,10 +57,10 @@ const reconciler = Reconciler<
   HostConfig['noTimeout']
 >({
   isPrimaryRenderer: false,
+  warnsIfNotActing: false,
   supportsMutation: true,
   supportsPersistence: false,
   supportsHydration: false,
-  now: Date.now,
   scheduleTimeout: setTimeout,
   cancelTimeout: clearTimeout,
   noTimeout: -1,
@@ -87,11 +88,30 @@ const reconciler = Reconciler<
   resetAfterCommit() {},
   preparePortalMount() {},
   clearContainer: (container) => (container.head = null),
-  // @ts-ignore
   getCurrentEventPriority: () => DefaultEventPriority,
-  beforeActiveInstanceBlur: () => {},
-  afterActiveInstanceBlur: () => {},
-  detachDeletedInstance: () => {},
+  getInstanceFromNode() {
+    throw new Error('Not implemented.')
+  },
+  beforeActiveInstanceBlur() {},
+  afterActiveInstanceBlur() {},
+  detachDeletedInstance() {},
+  // @ts-ignore untyped react-experimental options inspired by react-art
+  // TODO: add shell types for these and upstream to DefinitelyTyped
+  // https://github.com/facebook/react/blob/main/packages/react-art/src/ReactFiberConfigART.js
+  shouldAttemptEagerTransition() {
+    return false
+  },
+  requestPostPaintCallback() {},
+  maySuspendCommit() {
+    return false
+  },
+  preloadInstance() {
+    return true // true indicates already loaded
+  },
+  startSuspendingCommit() {},
+  suspendInstance() {},
+  waitForCommitToBeReady() {},
+  NotPendingTransition: null,
 })
 
 // Inject renderer meta into devtools
@@ -121,11 +141,7 @@ export function createPortal(element: React.ReactNode, container: HostContainer)
   return <>{reconciler.createPortal(element, container, null, null)}</>
 }
 
-declare module 'react' {
-  const unstable_act: <T = any>(cb: () => Promise<T>) => Promise<T>
-}
-
 /**
  * Safely flush async effects when testing, simulating a legacy root.
  */
-export const act = React.unstable_act
+export const act: <T = any>(cb: () => Promise<T>) => Promise<T> = (React as any).act

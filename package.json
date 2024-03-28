@@ -34,19 +34,19 @@
   "devDependencies": {
     "@types/node": "^18.7.14",
     "@types/react": "^18.0.17",
-    "react": "^18.2.0",
+    "react": "0.0.0-experimental-2b036d3f1-20240327",
     "rimraf": "^3.0.2",
-    "suspend-react": "^0.0.8",
+    "suspend-react": "^0.1.3",
     "typescript": "^4.7.4",
     "vite": "^3.0.9",
     "vitest": "^0.22.1"
   },
   "dependencies": {
-    "@types/react-reconciler": "^0.26.7",
-    "react-reconciler": "^0.27.0"
+    "@types/react-reconciler": "^0.28.8",
+    "react-reconciler": "0.0.0-experimental-2b036d3f1-20240327"
   },
   "peerDependencies": {
-    "react": ">=18.0"
+    "react": ">=19.0"
   },
   "scripts": {
     "build": "rimraf dist && vite build && tsc",
