@@ -61,7 +61,6 @@ const reconciler = Reconciler<
   HostConfig['noTimeout']
 >({
   isPrimaryRenderer: false,
-  warnsIfNotActing: false,
   supportsMutation: true,
   supportsPersistence: false,
   supportsHydration: false,
@@ -92,6 +91,10 @@ const reconciler = Reconciler<
   resetAfterCommit() {},
   preparePortalMount() {},
   clearContainer: (container) => (container.head = null),
+  // @ts-ignore untyped react-experimental options inspired by react-art
+  // TODO: add shell types for these and upstream to DefinitelyTyped
+  // https://github.com/facebook/react/blob/main/packages/react-art/src/ReactFiberConfigART.js
+  warnsIfNotActing: false,
   getCurrentEventPriority: () => DefaultEventPriority,
   getInstanceFromNode() {
     throw new Error('Not implemented.')
@@ -99,9 +102,6 @@ const reconciler = Reconciler<
   beforeActiveInstanceBlur() {},
   afterActiveInstanceBlur() {},
   detachDeletedInstance() {},
-  // @ts-ignore untyped react-experimental options inspired by react-art
-  // TODO: add shell types for these and upstream to DefinitelyTyped
-  // https://github.com/facebook/react/blob/main/packages/react-art/src/ReactFiberConfigART.js
   shouldAttemptEagerTransition() {
     return false
   },
