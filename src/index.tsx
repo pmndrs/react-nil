@@ -1,7 +1,8 @@
 /// <reference types="react/experimental" />
 import * as React from 'react'
 import Reconciler from 'react-reconciler'
-import { DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
+// @ts-ignore
+import { NoEventPriority, DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
 console.warn = console.error = (message: string) => {
   throw new Error(message)
@@ -44,6 +45,8 @@ function getInstanceProps(props: Reconciler.Fiber['pendingProps']): HostConfig['
 
   return instanceProps
 }
+
+let currentUpdatePriority: number = NoEventPriority
 
 const reconciler = Reconciler<
   HostConfig['type'],
@@ -91,17 +94,23 @@ const reconciler = Reconciler<
   resetAfterCommit() {},
   preparePortalMount() {},
   clearContainer: (container) => (container.head = null),
-  // @ts-ignore untyped react-experimental options inspired by react-art
-  // TODO: add shell types for these and upstream to DefinitelyTyped
-  // https://github.com/facebook/react/blob/main/packages/react-art/src/ReactFiberConfigART.js
   warnsIfNotActing: false,
-  getCurrentEventPriority: () => DefaultEventPriority,
-  getInstanceFromNode() {
-    throw new Error('Not implemented.')
-  },
+  getInstanceFromNode: () => null,
   beforeActiveInstanceBlur() {},
   afterActiveInstanceBlur() {},
   detachDeletedInstance() {},
+  // @ts-ignore untyped react-experimental options inspired by react-art
+  // TODO: add shell types for these and upstream to DefinitelyTyped
+  // https://github.com/facebook/react/blob/main/packages/react-art/src/ReactFiberConfigART.js
+  setCurrentUpdatePriority(newPriority) {
+    currentUpdatePriority = newPriority
+  },
+  getCurrentUpdatePriority() {
+    return currentUpdatePriority
+  },
+  resolveUpdatePriority() {
+    return currentUpdatePriority || DefaultEventPriority
+  },
   shouldAttemptEagerTransition() {
     return false
   },
