@@ -361,17 +361,17 @@ postcss@^8.4.16:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-react-reconciler@0.31.0-canary-4c12339ce-20240408:
-  version "0.31.0-canary-4c12339ce-20240408"
-  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.31.0-canary-4c12339ce-20240408.tgz#18a2f8ee9a535ae4da09fe9fc185f8bdc08360f5"
-  integrity sha512-mi9Ybw+UexT5qW+WlBIID7PUi7Etqv+792m33KpjNQ3iJOPlRx35S/sz6xE1MMB81RxL8Z54yhTY45zoJuGaOA==
+react-reconciler@0.31.0-canary-33a32441e9-20240418:
+  version "0.31.0-canary-33a32441e9-20240418"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.31.0-canary-33a32441e9-20240418.tgz#53a268f22deb27ffc2cfa871aa69f8c212b0439d"
+  integrity sha512-jqRJuwS8fHDk4YWqwViRTzXFJyQg359uTs0pRka44FQXugkJb1O3jkZUvFfL/YiXr/Bm4yZjcUZpLqNeQf3IeA==
   dependencies:
-    scheduler "0.25.0-canary-4c12339ce-20240408"
+    scheduler "0.25.0-canary-33a32441e9-20240418"
 
-react@19.0.0-canary-4c12339ce-20240408:
-  version "19.0.0-canary-4c12339ce-20240408"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-canary-4c12339ce-20240408.tgz#21bb23e15848af30655039a0d5496ccea3ea3c36"
-  integrity sha512-QdQl76CTAmYrwjxq6fZRDWw2/MHPNxkYQ1xZVir2MbK/wxK62vFAPGr2j/AXs36ADVUq+tUGx4XNmdgnfL4f1Q==
+react@19.0.0-canary-33a32441e9-20240418:
+  version "19.0.0-canary-33a32441e9-20240418"
+  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-canary-33a32441e9-20240418.tgz#27150815ffd1ab7a084ff9f5a486271242853084"
+  integrity sha512-daCqNhSLKCDulgZJ/ER4bvsErZmKjRkDtcepxmpb/P0S2VgrFLHNJi8oUdMuZkAkXuo1EF+h41JSs567iBPDsA==
 
 resolve@^1.22.1:
   version "1.22.1"
@@ -396,10 +396,10 @@ rimraf@^3.0.2:
   optionalDependencies:
     fsevents "~2.3.2"
 
-scheduler@0.25.0-canary-4c12339ce-20240408:
-  version "0.25.0-canary-4c12339ce-20240408"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-canary-4c12339ce-20240408.tgz#313e246cf1991e5f38aba45a738e844a1ae2bff6"
-  integrity sha512-XGG/Y5q5jeJy+rKp963+nlz81H/eDEMDmwem8QFHkuufjW/IEhM9ha6PO76m9qA6Qr59HVjlTGJ6D1bH1lemeQ==
+scheduler@0.25.0-canary-33a32441e9-20240418:
+  version "0.25.0-canary-33a32441e9-20240418"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-canary-33a32441e9-20240418.tgz#ed20dab24297827e34290028fad1ccf239283a91"
+  integrity sha512-I0Avj483dt6gJ8obuZqak4U2PLHayoLen8cAEnM0/f+TxoMcoRemibCUgNuJBzDfrdWqhD72jXeZJMvsq0Jkpg==
 
 source-map-js@^1.0.2:
   version "1.0.2"

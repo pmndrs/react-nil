@@ -125,6 +125,7 @@ const reconciler = Reconciler<
   suspendInstance() {},
   waitForCommitToBeReady() {},
   NotPendingTransition: null,
+  resetFormInstance() {},
 })
 
 // Inject renderer meta into devtools
