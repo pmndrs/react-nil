@@ -4,10 +4,6 @@ import Reconciler from 'react-reconciler'
 // @ts-ignore
 import { NoEventPriority, DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
 
-console.warn = console.error = (message: string) => {
-  throw new Error(message)
-}
-
 export interface NilNode<P = Record<string, unknown>> {
   type: string
   props: P
@@ -27,7 +23,7 @@ interface HostConfig {
   suspenseInstance: NilNode
   hydratableInstance: never
   publicInstance: null
-  hostContext: null
+  hostContext: {}
   updatePayload: {}
   childSet: never
   timeoutHandle: number
@@ -45,6 +41,8 @@ function getInstanceProps(props: Reconciler.Fiber['pendingProps']): HostConfig['
 
   return instanceProps
 }
+
+const NO_CONTEXT: HostConfig['hostContext'] = {}
 
 let currentUpdatePriority: number = NoEventPriority
 
@@ -83,8 +81,8 @@ const reconciler = Reconciler<
   removeChild: (parent, child) => parent.children.splice(parent.children.indexOf(child), 1),
   removeChildFromContainer: (container) => (container.head = null),
   getPublicInstance: () => null,
-  getRootHostContext: () => null,
-  getChildHostContext: () => null,
+  getRootHostContext: () => NO_CONTEXT,
+  getChildHostContext: () => NO_CONTEXT,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
   prepareUpdate: () => ({}),

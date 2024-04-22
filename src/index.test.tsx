@@ -3,6 +3,11 @@ import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
 import { act, render, createPortal, type HostContainer } from './index'
 
+// Elevate React warnings
+console.warn = console.error = (message: string) => {
+  throw new Error(message)
+}
+
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
 }
