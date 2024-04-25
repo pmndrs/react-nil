@@ -85,7 +85,6 @@ const reconciler = Reconciler<
   getChildHostContext: () => NO_CONTEXT,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
-  prepareUpdate: () => ({}),
   commitUpdate: (instance, _, __, ___, props) => (instance.props = getInstanceProps(props)),
   commitTextUpdate: (instance, _, value) => (instance.props.value = value),
   prepareForCommit: () => null,
