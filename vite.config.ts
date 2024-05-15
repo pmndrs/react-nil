@@ -1,12 +1,12 @@
 import * as path from 'path'
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, transformWithEsbuild } from 'vite'
 
 export default defineConfig({
   build: {
     minify: false,
     sourcemap: true,
-    target: 'es2018',
+    target: 'es2020',
     lib: {
       formats: ['cjs', 'es'],
       entry: 'src/index.tsx',
@@ -21,5 +21,23 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: 'vite-tsc',
+      generateBundle(options) {
+        const ext = options.format === 'cjs' ? 'cts' : 'ts'
+        this.emitFile({ type: 'asset', fileName: `index.d.${ext}`, source: `export * from '../src'` })
+      },
+    },
+    {
+      name: 'vite-minify',
+      renderChunk: {
+        order: 'post',
+        handler(code, { fileName }) {
+          return transformWithEsbuild(code, fileName, { minify: true, target: 'es2018' })
+        },
+      },
+    },
+  ],
 })

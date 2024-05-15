@@ -18,5 +18,8 @@ jobs:
       - name: Check build health
         run: yarn build
 
+      - name: Check for regressions
+        run: yarn lint
+
       - name: Run tests
         run: yarn test --silent

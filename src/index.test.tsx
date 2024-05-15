@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { suspend } from 'suspend-react'
 import { vi, it, expect } from 'vitest'
-import { render, createPortal, type HostContainer } from './index'
+import { render, createPortal, type HostContainer } from './index.js'
 import type {} from 'react'
 import type {} from 'react/jsx-runtime'
 import type {} from 'react/jsx-dev-runtime'
