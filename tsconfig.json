@@ -6,7 +6,7 @@
     "lib": ["ESNext", "dom"],
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "pretty": true,
     "strict": true,
     "declaration": true,

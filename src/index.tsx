@@ -1,5 +1,4 @@
-/// <reference types="react/experimental" />
-import * as React from 'react'
+import { version, type ReactNode, type JSX } from 'react'
 import Reconciler from 'react-reconciler'
 // @ts-ignore
 import { NoEventPriority, DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
@@ -85,7 +84,7 @@ const reconciler = Reconciler<
   getChildHostContext: () => NO_CONTEXT,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
-  commitUpdate: (instance, _, __, ___, props) => (instance.props = getInstanceProps(props)),
+  commitUpdate: (instance, _, __, props) => (instance.props = getInstanceProps(props)),
   commitTextUpdate: (instance, _, value) => (instance.props.value = value),
   prepareForCommit: () => null,
   resetAfterCommit() {},
@@ -132,7 +131,7 @@ const isProd = typeof process === 'undefined' || process.env?.['NODE_ENV'] === '
 reconciler.injectIntoDevTools({
   findFiberByHostInstance: () => null,
   bundleType: isProd ? 0 : 1,
-  version: React.version,
+  version,
   rendererPackageName: 'react-nil',
 })
 
@@ -142,7 +141,7 @@ const root = reconciler.createContainer(container, ConcurrentRoot, null, false, 
 /**
  * Renders a React element into a `null` root.
  */
-export function render(element: React.ReactNode): HostContainer {
+export function render(element: ReactNode): HostContainer {
   reconciler.updateContainer(element, root, null, undefined)
   return container
 }
@@ -150,11 +149,6 @@ export function render(element: React.ReactNode): HostContainer {
 /**
  * Renders a React element into a foreign {@link HostContainer}.
  */
-export function createPortal(element: React.ReactNode, container: HostContainer): JSX.Element {
+export function createPortal(element: ReactNode, container: HostContainer): JSX.Element {
   return <>{reconciler.createPortal(element, container, null, null)}</>
 }
-
-/**
- * Safely flush async effects when testing, simulating a legacy root.
- */
-export const act: <T = any>(cb: () => Promise<T>) => Promise<T> = (React as any).act
