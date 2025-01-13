@@ -46,7 +46,7 @@
     "react-reconciler": "^0.27.0"
   },
   "peerDependencies": {
-    "react": ">=18.0"
+    "react": "^18.0.0"
   },
   "scripts": {
     "build": "rimraf dist && vite build && tsc",
