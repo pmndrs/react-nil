@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "target": "es6",
-    "module": "ESNext",
-    "lib": ["ESNext", "dom"],
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "bundler",
+    "strict": true,
     "jsx": "react",
     "pretty": true,
-    "strict": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "include": ["src/**/*"]
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "react-nil": ["./src"]
+    }
+  }
 }

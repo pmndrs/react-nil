@@ -6,7 +6,7 @@ on:
     branches: [master]
 
 jobs:
-  build-test-lint:
+  build-lint-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,5 +18,8 @@ jobs:
       - name: Check build health
         run: yarn build
 
+      - name: Check for regressions
+        run: yarn lint
+
       - name: Run tests
-        run: yarn test --silent
+        run: yarn test

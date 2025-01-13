@@ -1,11 +1,11 @@
-import * as path from 'path'
+import * as path from 'node:path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
     minify: false,
     sourcemap: true,
-    target: 'es2018',
+    target: 'es2020',
     lib: {
       formats: ['cjs', 'es'],
       entry: 'src/index.tsx',
@@ -13,11 +13,18 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id: string) => !id.startsWith('.') && !path.isAbsolute(id),
-      treeshake: false,
       output: {
-        preserveModules: true,
         sourcemapExcludeSources: true,
       },
     },
   },
+  plugins: [
+    {
+      name: 'vite-tsc',
+      generateBundle(options) {
+        const ext = options.format === 'cjs' ? 'cts' : 'ts'
+        this.emitFile({ type: 'asset', fileName: `index.d.${ext}`, source: `export * from '../src/index.tsx'` })
+      },
+    },
+  ],
 })
