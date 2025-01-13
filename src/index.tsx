@@ -103,6 +103,13 @@ reconciler.injectIntoDevTools({
   rendererPackageName: 'react-nil',
 })
 
+/**
+ * Force React to flush any updates inside the provided callback synchronously and immediately.
+ */
+export function flushSync<R>(fn: () => R): R {
+  return reconciler.flushSync(fn, undefined)
+}
+
 const container: HostContainer = { head: null }
 const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
 
