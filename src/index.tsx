@@ -278,6 +278,13 @@ const logRecoverableError = /* @__PURE__ */ (() =>
     : // In older browsers and test environments, fallback to console.error.
       console.error)()
 
+/**
+ * Force React to flush any updates inside the provided callback synchronously and immediately.
+ */
+export function flushSync<R>(fn: () => R): R {
+  return reconciler.flushSync(fn, undefined)
+}
+
 const container: HostContainer = { head: null }
 const root = /* @__PURE__ */ (reconciler as any).createContainer(
   container, // containerInfo
