@@ -261,13 +261,6 @@ const reconciler = /* @__PURE__ */ createReconciler<
   resetFormInstance() {},
 })
 
-/**
- * Force React to flush any updates inside the provided callback synchronously and immediately.
- */
-export function flushSync<R>(fn: () => R): R {
-  return reconciler.flushSync(fn)
-}
-
 // Report when an error was detected in a previous render
 // https://github.com/facebook/react/pull/23207
 const logRecoverableError = /* @__PURE__ */ (() =>
@@ -277,13 +270,6 @@ const logRecoverableError = /* @__PURE__ */ (() =>
       reportError
     : // In older browsers and test environments, fallback to console.error.
       console.error)()
-
-/**
- * Force React to flush any updates inside the provided callback synchronously and immediately.
- */
-export function flushSync<R>(fn: () => R): R {
-  return reconciler.flushSync(fn, undefined)
-}
 
 const container: HostContainer = { head: null }
 const root = /* @__PURE__ */ (reconciler as any).createContainer(
@@ -313,4 +299,11 @@ export function render(element: React.ReactNode): HostContainer {
 export function createPortal(element: React.ReactNode, container: HostContainer): React.JSX.Element {
   // @ts-expect-error
   return <>{reconciler.createPortal(element, container, null, null)}</>
+}
+
+/**
+ * Force React to flush any updates inside the provided callback synchronously and immediately.
+ */
+export function flushSync<R>(fn: () => R): R {
+  return reconciler.flushSync(fn)
 }
