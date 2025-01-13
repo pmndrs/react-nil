@@ -1,9 +1,13 @@
+import * as vite from 'vite'
 import * as path from 'node:path'
-import { defineConfig } from 'vite'
 
-export default defineConfig({
+export default vite.defineConfig({
+  resolve: {
+    alias: {
+      'react-nil': path.resolve(__dirname, 'src/index.tsx'),
+    },
+  },
   build: {
-    minify: false,
     sourcemap: true,
     target: 'es2020',
     lib: {
@@ -24,6 +28,19 @@ export default defineConfig({
       generateBundle(options) {
         const ext = options.format === 'cjs' ? 'cts' : 'ts'
         this.emitFile({ type: 'asset', fileName: `index.d.${ext}`, source: `export * from '../src/index.tsx'` })
+      },
+    },
+    {
+      name: 'vite-minify',
+      renderChunk: {
+        order: 'post',
+        async handler(code, { fileName }) {
+          // Preserve pure annotations, but remove all other comments and whitespace
+          code = code.replaceAll('/* @__PURE__ */', '__PURE__ || ')
+          const result = await vite.transformWithEsbuild(code, fileName, { minify: true, target: 'es2020' })
+          result.code = result.code.replaceAll('__PURE__||', '/*@__PURE__*/')
+          return result
+        },
       },
     },
   ],

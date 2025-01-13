@@ -8,9 +8,6 @@ import {
   ConcurrentRoot,
 } from 'react-reconciler/constants.js'
 
-// @ts-ignore
-const __DEV__ = /* @__PURE__ */ (() => typeof process !== 'undefined' && process.env.NODE_ENV !== 'production')()
-
 // TODO: upstream to DefinitelyTyped for React 19
 // https://github.com/facebook/react/issues/28956
 type EventPriority = number
@@ -112,7 +109,7 @@ function createReconciler<
   const reconciler = Reconciler(config as any)
 
   reconciler.injectIntoDevTools({
-    bundleType: __DEV__ ? 1 : 0,
+    bundleType: typeof process !== 'undefined' && process.env.NODE_ENV !== 'production' ? 1 : 0,
     rendererPackageName: 'react-nil',
     version: React.version,
   })
@@ -263,13 +260,13 @@ const reconciler = /* @__PURE__ */ createReconciler<
 
 // Report when an error was detected in a previous render
 // https://github.com/facebook/react/pull/23207
-const logRecoverableError = /* @__PURE__ */ (() =>
-  typeof reportError === 'function'
-    ? // In modern browsers, reportError will dispatch an error event,
-      // emulating an uncaught JavaScript error.
-      reportError
-    : // In older browsers and test environments, fallback to console.error.
-      console.error)()
+function logRecoverableError(error: any): void {
+  // In modern browsers, reportError will dispatch an error event,
+  // emulating an uncaught JavaScript error.
+  if (typeof reportError === 'function') return reportError(error)
+  // In older browsers and test environments, fallback to console.error.
+  else return console.error(error)
+}
 
 const container: HostContainer = { head: null }
 const root = /* @__PURE__ */ (reconciler as any).createContainer(

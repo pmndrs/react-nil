@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { it, expect } from 'vitest'
-import { render, createPortal, type HostContainer } from './index'
+import { render, createPortal, type HostContainer } from 'react-nil'
 
 // Let React know that we'll be testing effectful components
 declare global {
