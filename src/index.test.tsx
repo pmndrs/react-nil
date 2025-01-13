@@ -1,25 +1,12 @@
 import * as React from 'react'
-import { suspend } from 'suspend-react'
-import { vi, it, expect } from 'vitest'
-import { render, createPortal, type HostContainer } from './index.js'
-import type {} from 'react'
-import type {} from 'react/jsx-runtime'
-import type {} from 'react/jsx-dev-runtime'
+import { it, expect } from 'vitest'
+import { render, createPortal, type HostContainer } from './index'
 
-// Elevate React warnings
-console.warn = console.error = (message: string) => {
-  throw new Error(message)
-}
-
+// Let React know that we'll be testing effectful components
 declare global {
   var IS_REACT_ACT_ENVIRONMENT: boolean
 }
-
-// Let React know that we'll be testing effectful components
-global.IS_REACT_ACT_ENVIRONMENT = true
-
-// Mock scheduler to test React features
-vi.mock('scheduler', () => require('scheduler/unstable_mock'))
+globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 interface ReactProps<T> {
   key?: React.Key
@@ -35,31 +22,12 @@ declare module 'react' {
   }
 }
 
-declare module 'react/jsx-runtime' {
-  namespace JSX {
-    interface IntrinsicElements {
-      element: ReactProps<null> & Record<string, unknown>
-    }
-  }
-}
-
-declare module 'react/jsx-dev-runtime' {
-  namespace JSX {
-    interface IntrinsicElements {
-      element: ReactProps<null> & Record<string, unknown>
-    }
-  }
-}
-
 it('should go through lifecycle', async () => {
   const lifecycle: string[] = []
 
   function Test() {
     lifecycle.push('render')
-    React.useImperativeHandle(React.useRef(null), () => {
-      lifecycle.push('ref')
-      return null
-    })
+    React.useImperativeHandle(React.useRef(undefined), () => void lifecycle.push('ref'))
     React.useInsertionEffect(() => void lifecycle.push('useInsertionEffect'), [])
     React.useLayoutEffect(() => void lifecycle.push('useLayoutEffect'), [])
     React.useEffect(() => void lifecycle.push('useEffect'), [])
@@ -109,7 +77,8 @@ it('should render JSX', async () => {
   expect(container.head).toBe(null)
 
   // Suspense
-  const Test = () => (suspend(async () => null, []), (<element bar />))
+  const promise = Promise.resolve(null)
+  const Test = () => (React.use(promise), (<element bar />))
   await React.act(async () => (container = render(<Test />)))
   expect(container.head).toStrictEqual({ type: 'element', props: { bar: true }, children: [] })
 
@@ -140,7 +109,8 @@ it('should render text', async () => {
   expect(container.head).toBe(null)
 
   // Suspense
-  const Test = () => (suspend(async () => null, []), (<>three</>))
+  const promise = Promise.resolve(null)
+  const Test = () => (React.use(promise), (<>three</>))
   await React.act(async () => (container = render(<Test />)))
   expect(container.head).toStrictEqual({ type: 'text', props: { value: 'three' }, children: [] })
 

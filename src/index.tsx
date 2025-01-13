@@ -1,12 +1,21 @@
-import { version, type ReactNode, type JSX } from 'react'
+import * as React from 'react'
 import Reconciler from 'react-reconciler'
-import { NoEventPriority, DefaultEventPriority, ConcurrentRoot } from 'react-reconciler/constants.js'
+import {
+  // NoEventPriority,
+  ContinuousEventPriority,
+  DiscreteEventPriority,
+  DefaultEventPriority,
+  ConcurrentRoot,
+} from 'react-reconciler/constants.js'
+
+// @ts-ignore
+const __DEV__ = /* @__PURE__ */ (() => typeof process !== 'undefined' && process.env.NODE_ENV !== 'production')()
 
 // TODO: upstream to DefinitelyTyped for React 19
 // https://github.com/facebook/react/issues/28956
 type EventPriority = number
 
-const createReconciler = Reconciler as unknown as <
+function createReconciler<
   Type,
   Props,
   Container,
@@ -56,6 +65,7 @@ const createReconciler = Reconciler as unknown as <
     // Undocumented
     // https://github.com/facebook/react/pull/26722
     NotPendingTransition: TransitionStatus | null
+    HostTransitionContext: React.Context<TransitionStatus>
     // https://github.com/facebook/react/pull/28751
     setCurrentUpdatePriority(newPriority: EventPriority): void
     getCurrentUpdatePriority(): EventPriority
@@ -66,6 +76,11 @@ const createReconciler = Reconciler as unknown as <
     requestPostPaintCallback(callback: (time: number) => void): void
     // https://github.com/facebook/react/pull/26025
     shouldAttemptEagerTransition(): boolean
+    // https://github.com/facebook/react/pull/31528
+    trackSchedulerEvent(): void
+    // https://github.com/facebook/react/pull/31008
+    resolveEventType(): null | string
+    resolveEventTimeStamp(): number
 
     /**
      * This method is called during render to determine if the Host Component type and props require some kind of loading process to complete before committing an update.
@@ -93,11 +108,19 @@ const createReconciler = Reconciler as unknown as <
      */
     waitForCommitToBeReady(): ((initiateCommit: Function) => Function) | null
   },
-) => Reconciler.Reconciler<Container, Instance, TextInstance, SuspenseInstance, PublicInstance>
+): Reconciler.Reconciler<Container, Instance, TextInstance, SuspenseInstance, PublicInstance> {
+  const reconciler = Reconciler(config as any)
 
-declare module 'react-reconciler/constants.js' {
-  const NoEventPriority = 0
+  reconciler.injectIntoDevTools({
+    bundleType: __DEV__ ? 1 : 0,
+    rendererPackageName: 'react-nil',
+    version: React.version,
+  })
+
+  return reconciler as any
 }
+
+const NoEventPriority = 0
 
 export interface NilNode<P = Record<string, unknown>> {
   type: string
@@ -117,8 +140,8 @@ interface HostConfig {
   textInstance: NilNode
   suspenseInstance: NilNode
   hydratableInstance: never
-  formInstance: never
   publicInstance: null
+  formInstance: never
   hostContext: {}
   childSet: never
   timeoutHandle: number
@@ -142,7 +165,7 @@ const NO_CONTEXT: HostConfig['hostContext'] = {}
 
 let currentUpdatePriority: number = NoEventPriority
 
-const reconciler = createReconciler<
+const reconciler = /* @__PURE__ */ createReconciler<
   HostConfig['type'],
   HostConfig['props'],
   HostConfig['container'],
@@ -159,6 +182,7 @@ const reconciler = createReconciler<
   HostConfig['TransitionStatus']
 >({
   isPrimaryRenderer: false,
+  warnsIfNotActing: false,
   supportsMutation: true,
   supportsPersistence: false,
   supportsHydration: false,
@@ -182,63 +206,96 @@ const reconciler = createReconciler<
   getChildHostContext: () => NO_CONTEXT,
   shouldSetTextContent: () => false,
   finalizeInitialChildren: () => false,
-  commitUpdate: (instance, _, __, props) => (instance.props = getInstanceProps(props)),
+  commitUpdate: (instance, _type, _prevProps, nextProps) => (instance.props = getInstanceProps(nextProps)),
   commitTextUpdate: (instance, _, value) => (instance.props.value = value),
   prepareForCommit: () => null,
   resetAfterCommit() {},
   preparePortalMount() {},
   clearContainer: (container) => (container.head = null),
-  warnsIfNotActing: false,
   getInstanceFromNode: () => null,
   beforeActiveInstanceBlur() {},
   afterActiveInstanceBlur() {},
   detachDeletedInstance() {},
   prepareScopeUpdate() {},
   getInstanceFromScope: () => null,
-  setCurrentUpdatePriority(newPriority) {
+  shouldAttemptEagerTransition: () => false,
+  trackSchedulerEvent: () => {},
+  resolveEventType: () => null,
+  resolveEventTimeStamp: () => -1.1,
+  requestPostPaintCallback() {},
+  maySuspendCommit: () => false,
+  preloadInstance: () => true, // true indicates already loaded
+  startSuspendingCommit() {},
+  suspendInstance() {},
+  waitForCommitToBeReady: () => null,
+  NotPendingTransition: null,
+  HostTransitionContext: /* @__PURE__ */ React.createContext<HostConfig['TransitionStatus']>(null),
+  setCurrentUpdatePriority(newPriority: number) {
     currentUpdatePriority = newPriority
   },
   getCurrentUpdatePriority() {
     return currentUpdatePriority
   },
   resolveUpdatePriority() {
-    return currentUpdatePriority || DefaultEventPriority
+    if (currentUpdatePriority !== NoEventPriority) return currentUpdatePriority
+
+    switch (typeof window !== 'undefined' && window.event?.type) {
+      case 'click':
+      case 'contextmenu':
+      case 'dblclick':
+      case 'pointercancel':
+      case 'pointerdown':
+      case 'pointerup':
+        return DiscreteEventPriority
+      case 'pointermove':
+      case 'pointerout':
+      case 'pointerover':
+      case 'pointerenter':
+      case 'pointerleave':
+      case 'wheel':
+        return ContinuousEventPriority
+      default:
+        return DefaultEventPriority
+    }
   },
-  shouldAttemptEagerTransition() {
-    return false
-  },
-  requestPostPaintCallback() {},
-  maySuspendCommit() {
-    return false
-  },
-  preloadInstance() {
-    return true // true indicates already loaded
-  },
-  startSuspendingCommit() {},
-  suspendInstance() {},
-  waitForCommitToBeReady() {
-    return null
-  },
-  NotPendingTransition: null,
   resetFormInstance() {},
 })
 
-// Inject renderer meta into devtools
-const isProd = typeof process === 'undefined' || process.env?.['NODE_ENV'] === 'production'
-reconciler.injectIntoDevTools({
-  findFiberByHostInstance: () => null,
-  bundleType: isProd ? 0 : 1,
-  version,
-  rendererPackageName: 'react-nil',
-})
+/**
+ * Force React to flush any updates inside the provided callback synchronously and immediately.
+ */
+export function flushSync<R>(fn: () => R): R {
+  return reconciler.flushSync(fn)
+}
+
+// Report when an error was detected in a previous render
+// https://github.com/facebook/react/pull/23207
+const logRecoverableError = /* @__PURE__ */ (() =>
+  typeof reportError === 'function'
+    ? // In modern browsers, reportError will dispatch an error event,
+      // emulating an uncaught JavaScript error.
+      reportError
+    : // In older browsers and test environments, fallback to console.error.
+      console.error)()
 
 const container: HostContainer = { head: null }
-const root = reconciler.createContainer(container, ConcurrentRoot, null, false, null, '', console.error, null)
+const root = /* @__PURE__ */ (reconciler as any).createContainer(
+  container, // containerInfo
+  ConcurrentRoot, // tag
+  null, // hydrationCallbacks
+  false, // isStrictMode
+  null, // concurrentUpdatesByDefaultOverride
+  '', // identifierPrefix
+  logRecoverableError, // onUncaughtError
+  logRecoverableError, // onCaughtError
+  logRecoverableError, // onRecoverableError
+  null, // transitionCallbacks
+)
 
 /**
  * Renders a React element into a `null` root.
  */
-export function render(element: ReactNode): HostContainer {
+export function render(element: React.ReactNode): HostContainer {
   reconciler.updateContainer(element, root, null, undefined)
   return container
 }
@@ -246,6 +303,7 @@ export function render(element: ReactNode): HostContainer {
 /**
  * Renders a React element into a foreign {@link HostContainer}.
  */
-export function createPortal(element: ReactNode, container: HostContainer): JSX.Element {
+export function createPortal(element: React.ReactNode, container: HostContainer): React.JSX.Element {
+  // @ts-expect-error
   return <>{reconciler.createPortal(element, container, null, null)}</>
 }

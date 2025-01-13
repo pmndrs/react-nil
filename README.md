@@ -42,11 +42,19 @@ We can take this further by rendering made-up elements that get returned as a re
 
 You can take a snapshot for testing via `React.act` which will wait for effects and suspense to finish.
 
-```jsx
+```tsx
 import { useState, useEffect, act } from 'react'
 import { render } from 'react-nil'
 
-function Test(props) {
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      timestamp: Record<string, unknown>
+    }
+  }
+}
+
+function Test() {
   const [value, setValue] = useState(-1)
   useEffect(() => setValue(Date.now()), [])
   return <timestamp value={value} />

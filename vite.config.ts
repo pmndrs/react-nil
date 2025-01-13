@@ -1,6 +1,5 @@
-import * as path from 'path'
-import react from '@vitejs/plugin-react'
-import { defineConfig, transformWithEsbuild } from 'vite'
+import * as path from 'node:path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
@@ -14,29 +13,17 @@ export default defineConfig({
     },
     rollupOptions: {
       external: (id: string) => !id.startsWith('.') && !path.isAbsolute(id),
-      treeshake: false,
       output: {
-        preserveModules: true,
         sourcemapExcludeSources: true,
       },
     },
   },
   plugins: [
-    react(),
     {
       name: 'vite-tsc',
       generateBundle(options) {
         const ext = options.format === 'cjs' ? 'cts' : 'ts'
-        this.emitFile({ type: 'asset', fileName: `index.d.${ext}`, source: `export * from '../src'` })
-      },
-    },
-    {
-      name: 'vite-minify',
-      renderChunk: {
-        order: 'post',
-        handler(code, { fileName }) {
-          return transformWithEsbuild(code, fileName, { minify: true, target: 'es2018' })
-        },
+        this.emitFile({ type: 'asset', fileName: `index.d.${ext}`, source: `export * from '../src/index.tsx'` })
       },
     },
   ],
